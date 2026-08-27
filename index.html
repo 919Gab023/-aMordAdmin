@@ -1,0 +1,2834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#07111f">
+<title>ÇaMord! — ADMIN V3</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#07111f;
+  --panel:#0d1929;
+  --panel2:#101f32;
+  --border:#24364e;
+  --text:#f4f7fb;
+  --muted:#91a1b5;
+  --blue:#168cff;
+  --blue2:#0d6fd1;
+  --green:#17b978;
+  --red:#ed4b62;
+  --orange:#f59e0b;
+  --purple:#9b6cff;
+}
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+body{min-height:100vh}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(7,17,31,.96);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:13px 16px;
+}
+
+.headerInner{
+  max-width:1450px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.logo span{
+  color:#ff4f9a;
+  font-size:13px;
+  margin-left:5px;
+}
+
+.adminBadge{
+  margin-left:auto;
+  background:#17283d;
+  border:1px solid #2b4260;
+  border-radius:10px;
+  padding:8px 11px;
+  color:#b8c8da;
+  font-size:12px;
+}
+
+.wrap{
+  width:min(1450px,100%);
+  margin:auto;
+  padding:15px;
+}
+
+/* SEARCH */
+
+.globalSearch{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.searchBox{
+  flex:1;
+  min-width:0;
+  background:#0d1929;
+  border:1px solid #2a405c;
+  color:white;
+  padding:14px 15px;
+  border-radius:13px;
+  outline:none;
+}
+
+.searchBox:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(22,140,255,.12);
+}
+
+.searchButton{
+  background:var(--blue);
+  color:white;
+  padding:0 17px;
+  border-radius:13px;
+  font-weight:900;
+}
+
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.stat{
+  background:linear-gradient(145deg,#0e1b2c,#0a1625);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:13px;
+  min-width:0;
+}
+
+.stat .label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.stat b{
+  display:block;
+  font-size:25px;
+  margin-top:5px;
+}
+
+.stat .mini{
+  color:#5fb7ff;
+  font-size:11px;
+  margin-top:4px;
+}
+
+/* TABS */
+
+.tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  margin-bottom:15px;
+}
+
+.tabs button{
+  flex:0 0 auto;
+  background:#101f32;
+  color:#aebdd0;
+  border:1px solid var(--border);
+  padding:11px 14px;
+  border-radius:11px;
+  font-weight:800;
+}
+
+.tabs button.active{
+  background:var(--blue);
+  color:white;
+  border-color:var(--blue);
+}
+
+/* CARDS */
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+}
+
+.card h2{
+  margin:0 0 8px;
+  font-size:19px;
+}
+
+.card h3{
+  margin:16px 0 8px;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.small{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.threeGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+/* REPORT TABS */
+
+.reportSubTabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:13px;
+  flex-wrap:wrap;
+}
+
+.reportSubTabs button{
+  background:#16263b;
+  color:#b8c7d8;
+  padding:10px 13px;
+  border-radius:10px;
+  border:1px solid #293e58;
+  font-weight:800;
+}
+
+.reportSubTabs button.active{
+  background:#273e5d;
+  color:white;
+  border-color:#416284;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:#1b2d44;
+  border:1px solid #304966;
+  padding:4px 8px;
+  border-radius:999px;
+  color:#cbd7e5;
+  font-size:11px;
+  font-weight:800;
+}
+
+.badge.red{
+  background:#3b1822;
+  border-color:#703040;
+  color:#ff9baa;
+}
+
+.badge.green{
+  background:#123628;
+  border-color:#23674d;
+  color:#7ee4b8;
+}
+
+.badge.orange{
+  background:#392b12;
+  border-color:#6a501d;
+  color:#ffd178;
+}
+
+.badge.blue{
+  background:#102e4c;
+  border-color:#215d91;
+  color:#7cc4ff;
+}
+
+/* REPORT CARD */
+
+.reportCard{
+  background:#0e1b2c;
+  border:1px solid #263c57;
+  border-radius:15px;
+  padding:14px;
+  margin-bottom:11px;
+}
+
+.reportTop{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+}
+
+.reportIcon{
+  width:45px;
+  height:45px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#172a41;
+  font-size:22px;
+  flex:none;
+}
+
+.reportTitle{
+  flex:1;
+  min-width:0;
+}
+
+.reportTitle b{
+  font-size:15px;
+}
+
+.reportReason{
+  margin-top:4px;
+  color:#ff8da0;
+  font-size:12px;
+}
+
+.reportContent{
+  background:#091321;
+  border:1px solid #20334a;
+  border-radius:11px;
+  padding:12px;
+  margin-top:12px;
+}
+
+.reportContent img{
+  width:100%;
+  max-height:260px;
+  object-fit:cover;
+  border-radius:10px;
+  display:block;
+  margin-top:9px;
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.btn{
+  padding:9px 12px;
+  border-radius:9px;
+  color:white;
+  font-weight:800;
+}
+
+.btnBlue{background:var(--blue)}
+.btnGreen{background:var(--green)}
+.btnRed{background:var(--red)}
+.btnOrange{background:#b87808}
+.btnDark{background:#1b2b40;border:1px solid #2c4561}
+.btnPurple{background:var(--purple)}
+
+.btn:active{
+  transform:scale(.98);
+}
+
+/* DETAILS */
+
+.detailGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.detail{
+  background:#0a1625;
+  border:1px solid #20334b;
+  border-radius:10px;
+  padding:10px;
+}
+
+.detail .key{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.detail .value{
+  margin-top:3px;
+  font-weight:800;
+}
+
+/* USERS */
+
+.userRow{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  background:#0e1b2c;
+  border:1px solid #263c57;
+  border-radius:13px;
+  padding:12px;
+  margin-bottom:9px;
+}
+
+.avatar{
+  width:45px;
+  height:45px;
+  flex:none;
+  border-radius:50%;
+  background:linear-gradient(145deg,#258ef0,#7357db);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:17px;
+}
+
+.userInfo{
+  flex:1;
+  min-width:0;
+}
+
+.userInfo b{
+  display:block;
+}
+
+.userInfo .line{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
+
+/* PROFILE */
+
+.profileHero{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  padding-bottom:15px;
+  border-bottom:1px solid var(--border);
+}
+
+.bigAvatar{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#168cff,#9b6cff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  font-weight:900;
+}
+
+.profileName{
+  font-size:24px;
+  font-weight:900;
+}
+
+.profileStats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:14px;
+}
+
+.profileStat{
+  background:#0a1625;
+  border:1px solid #20334b;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+}
+
+.profileStat b{
+  display:block;
+  font-size:19px;
+}
+
+/* FISH */
+
+.fishGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:11px;
+}
+
+.fishCard{
+  overflow:hidden;
+  background:#0e1b2c;
+  border:1px solid #263c57;
+  border-radius:13px;
+}
+
+.fishCard img{
+  width:100%;
+  height:145px;
+  object-fit:cover;
+  display:block;
+}
+
+.fishBody{
+  padding:11px;
+}
+
+/* TABLE */
+
+.tableWrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+
+th,td{
+  padding:11px;
+  border-bottom:1px solid #23364d;
+  text-align:left;
+}
+
+th{
+  color:#9eafc3;
+  font-size:12px;
+}
+
+/* FORMS */
+
+input,textarea,select{
+  width:100%;
+  background:#091522;
+  border:1px solid #29405b;
+  color:white;
+  padding:11px;
+  border-radius:10px;
+  outline:none;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:var(--blue);
+}
+
+.formGroup{
+  margin-bottom:10px;
+}
+
+.formGroup label{
+  display:block;
+  font-size:12px;
+  color:#9eafc3;
+  margin-bottom:5px;
+}
+
+/* EMPTY */
+
+.empty{
+  text-align:center;
+  padding:40px 15px;
+  color:var(--muted);
+}
+
+.empty .emoji{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  z-index:100;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modalBox{
+  width:min(850px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#0c1828;
+  border:1px solid #2a405c;
+  border-radius:20px 20px 0 0;
+  padding:18px;
+}
+
+.modalHead{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.modalHead h2{
+  flex:1;
+  margin:0;
+}
+
+.close{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#1b2b40;
+  color:white;
+  font-size:20px;
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translate(-50%,120px);
+  z-index:200;
+  background:#12243a;
+  border:1px solid #315070;
+  color:white;
+  padding:12px 17px;
+  border-radius:12px;
+  box-shadow:0 10px 35px #0008;
+  transition:.25s;
+  font-weight:800;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+  .stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .fishGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .threeGrid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:650px){
+  .wrap{
+    padding:10px;
+  }
+
+  .header{
+    padding:11px 10px;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid,
+  .threeGrid{
+    grid-template-columns:1fr;
+  }
+
+  .fishGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .profileStats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .detailGrid{
+    grid-template-columns:1fr;
+  }
+
+  .userRow{
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .userRow .actions{
+    width:100%;
+  }
+
+  .reportTop{
+    align-items:flex-start;
+  }
+
+  .btn{
+    min-height:40px;
+  }
+
+  .searchButton{
+    display:none;
+  }
+
+  .logo{
+    font-size:18px;
+  }
+
+  .adminBadge{
+    font-size:10px;
+    padding:7px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="headerInner">
+    <div class="logo">
+      🎣 ÇaMord! <span>ADMIN</span>
+    </div>
+
+    <div class="adminBadge">
+      🔐 MODE ADMINISTRATEUR
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- RECHERCHE GLOBALE -->
+  <div class="globalSearch">
+    <input
+      id="globalSearch"
+      class="searchBox"
+      placeholder="🔎 Rechercher un utilisateur, une prise, un commentaire, un signalement..."
+      oninput="globalSearch(this.value)"
+    >
+    <button class="searchButton" onclick="globalSearch(document.getElementById('globalSearch').value)">
+      Rechercher
+    </button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+
+    <div class="stat">
+      <span class="label">🎣 Prises</span>
+      <b id="statCatches">12 481</b>
+      <span class="mini">+84 aujourd’hui</span>
+    </div>
+
+    <div class="stat">
+      <span class="label">👤 Utilisateurs</span>
+      <b id="statUsers">3 829</b>
+      <span class="mini">+21 aujourd’hui</span>
+    </div>
+
+    <div class="stat">
+      <span class="label">🚩 À traiter</span>
+      <b id="statReports">0</b>
+      <span class="mini">dossiers non classés</span>
+    </div>
+
+    <div class="stat">
+      <span class="label">🗂️ Classés</span>
+      <b id="statArchived">0</b>
+      <span class="mini">dossiers archivés</span>
+    </div>
+
+    <div class="stat">
+      <span class="label">💬 Commentaires</span>
+      <b>8 421</b>
+      <span class="mini">+386 aujourd’hui</span>
+    </div>
+
+    <div class="stat">
+      <span class="label">🐟 Espèces</span>
+      <b id="statFish">6</b>
+      <span class="mini">base publique</span>
+    </div>
+
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+
+    <button id="tabReports" class="active" onclick="showTab('reports',this)">
+      🚩 Modération
+    </button>
+
+    <button onclick="showTab('fish',this)">
+      🐟 Poissons
+    </button>
+
+    <button onclick="showTab('users',this)">
+      👤 Utilisateurs
+    </button>
+
+    <button onclick="showTab('activity',this)">
+      📜 Activité
+    </button>
+
+    <button onclick="showTab('stats',this)">
+      📊 Statistiques
+    </button>
+
+  </div>
+
+  <section id="panel"></section>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal" onclick="closeModalOutside(event)">
+  <div id="modalBox" class="modalBox"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+
+/* ============================================================
+   DONNÉES
+============================================================ */
+
+const DEMO_IMG =
+"https://images.unsplash.com/photo-1544550285-f813152fb2fd?auto=format&fit=crop&w=1000&q=80";
+
+const reportsDefault = [
+
+  {
+    id:"R-1001",
+    type:"prise",
+    icon:"🎣",
+    author:"LucasFishing",
+    reason:"Photo potentiellement trompeuse",
+    date:"27 août 2026 • 14:32",
+    reports:3,
+    status:"open",
+    title:"Bar — 61 cm",
+    content:"Le membre affirme avoir capturé un bar de 61 cm.",
+    details:{
+      "Espèce":"Bar",
+      "Taille":"61 cm",
+      "Poids":"2,4 kg",
+      "Zone":"Charente-Maritime",
+      "Auteur":"LucasFishing",
+      "ID prise":"CATCH-48291"
+    },
+    image:DEMO_IMG
+  },
+
+  {
+    id:"R-1002",
+    type:"commentaire",
+    icon:"💬",
+    author:"NoaPêche",
+    reason:"Contenu insultant",
+    date:"27 août 2026 • 13:48",
+    reports:5,
+    status:"open",
+    title:"Commentaire signalé",
+    content:"« Franchement t'es nul, retourne apprendre à pêcher avant de poster ça. »",
+    details:{
+      "Auteur":"NoaPêche",
+      "Publication":"Bar — LucasFishing",
+      "Date":"27 août 2026 • 13:46",
+      "Signalements":"5",
+      "ID commentaire":"COM-83921"
+    }
+  },
+
+  {
+    id:"R-1003",
+    type:"prise",
+    icon:"🐟",
+    author:"PaulAtlantique",
+    reason:"Prise possiblement falsifiée",
+    date:"27 août 2026 • 11:21",
+    reports:4,
+    status:"open",
+    title:"Daurade royale — 72 cm",
+    content:"Plusieurs membres demandent une vérification de la prise.",
+    details:{
+      "Espèce":"Daurade royale",
+      "Taille":"72 cm",
+      "Poids":"5,1 kg",
+      "Zone":"Côte Atlantique",
+      "Auteur":"PaulAtlantique",
+      "ID prise":"CATCH-49211"
+    },
+    image:"https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=1000&q=80"
+  },
+
+  {
+    id:"R-1004",
+    type:"utilisateur",
+    icon:"👤",
+    author:"TitiFishing",
+    reason:"Signalements répétés",
+    date:"26 août 2026 • 22:14",
+    reports:8,
+    status:"open",
+    title:"Comportement problématique",
+    content:"Le compte a reçu plusieurs signalements concernant ses publications et commentaires.",
+    details:{
+      "Utilisateur":"TitiFishing",
+      "Ancienneté":"8 mois",
+      "Prises":"92",
+      "Commentaires":"431",
+      "Signalements reçus":"8",
+      "ID utilisateur":"USR-28491"
+    }
+  },
+
+  {
+    id:"R-1005",
+    type:"commentaire",
+    icon:"💬",
+    author:"PêcheurDu17",
+    reason:"Spam",
+    date:"26 août 2026 • 18:41",
+    reports:2,
+    status:"open",
+    title:"Commentaire public",
+    content:"🔥🔥🔥 GAGNE 100€ !!! clique sur mon profil !!! GAGNE GAGNE GAGNE !!!",
+    details:{
+      "Auteur":"PêcheurDu17",
+      "Publication":"Maquereau — TomAuBord",
+      "Signalements":"2",
+      "ID commentaire":"COM-88231"
+    }
+  }
+
+];
+
+const users = [
+
+  {
+    name:"LucasFishing",
+    id:"USR-1001",
+    city:"La Rochelle",
+    joined:"12 janvier 2026",
+    catches:127,
+    followers:482,
+    following:91,
+    comments:328,
+    likes:1842,
+    reports:1,
+    status:"Actif",
+    verified:true
+  },
+
+  {
+    name:"EmmaPêche",
+    id:"USR-1002",
+    city:"Île de Ré",
+    joined:"4 février 2026",
+    catches:104,
+    followers:391,
+    following:73,
+    comments:241,
+    likes:1621,
+    reports:0,
+    status:"Actif",
+    verified:true
+  },
+
+  {
+    name:"TomAuBord",
+    id:"USR-1003",
+    city:"Royan",
+    joined:"19 mars 2026",
+    catches:87,
+    followers:274,
+    following:64,
+    comments:183,
+    likes:942,
+    reports:0,
+    status:"Actif",
+    verified:false
+  },
+
+  {
+    name:"TitiFishing",
+    id:"USR-1004",
+    city:"Bordeaux",
+    joined:"8 décembre 2025",
+    catches:92,
+    followers:112,
+    following:194,
+    comments:431,
+    likes:381,
+    reports:8,
+    status:"Sous surveillance",
+    verified:false
+  },
+
+  {
+    name:"NoaPêche",
+    id:"USR-1005",
+    city:"Nantes",
+    joined:"21 juin 2026",
+    catches:43,
+    followers:96,
+    following:52,
+    comments:217,
+    likes:422,
+    reports:2,
+    status:"Averti",
+    verified:false
+  }
+
+];
+
+let fishData = [
+
+  ["Bar",
+   "https://images.unsplash.com/photo-1544550285-f813152fb2fd?auto=format&fit=crop&w=700&q=80"],
+
+  ["Daurade royale",
+   "https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=700&q=80"],
+
+  ["Maquereau",
+   "https://images.unsplash.com/photo-1516683037151-9a17603a8dc1?auto=format&fit=crop&w=700&q=80"],
+
+  ["Sole",
+   "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=700&q=80"],
+
+  ["Lieu jaune",
+   "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=700&q=80"],
+
+  ["Mulet",
+   "https://images.unsplash.com/photo-1530053969600-caed2596d242?auto=format&fit=crop&w=700&q=80"]
+
+];
+
+const activityLog = [
+
+  ["27/08 14:32","🚩","Nouveau signalement","Bar — LucasFishing"],
+  ["27/08 14:15","👤","Nouvel utilisateur","PêcheurDu17"],
+  ["27/08 13:48","💬","Commentaire signalé","NoaPêche"],
+  ["27/08 12:51","🎣","Nouvelle prise","EmmaPêche — Daurade"],
+  ["27/08 11:21","🚩","Nouveau signalement","PaulAtlantique"],
+  ["27/08 10:48","❤️","Pic de likes","1 248 likes aujourd'hui"],
+  ["26/08 22:14","🚩","Compte signalé","TitiFishing"]
+
+];
+
+/* ============================================================
+   LOCAL STORAGE
+============================================================ */
+
+let reports = loadReports();
+
+function loadReports(){
+
+  try{
+
+    const saved = localStorage.getItem("camord_admin_reports_v3");
+
+    if(saved){
+      return JSON.parse(saved);
+    }
+
+  }catch(e){}
+
+  return reportsDefault.map(x=>({...x}));
+
+}
+
+function saveReports(){
+
+  localStorage.setItem(
+    "camord_admin_reports_v3",
+    JSON.stringify(reports)
+  );
+
+}
+
+/* ============================================================
+   UTILITAIRES
+============================================================ */
+
+const panel = document.getElementById("panel");
+
+function escapeHTML(str){
+
+  if(str === undefined || str === null) return "";
+
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+function showToast(message){
+
+  const t = document.getElementById("toast");
+
+  t.textContent = message;
+
+  t.classList.add("show");
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(()=>{
+    t.classList.remove("show");
+  },2200);
+
+}
+
+function updateCounters(){
+
+  const open =
+    reports.filter(r=>r.status==="open").length;
+
+  const archived =
+    reports.filter(r=>r.status==="archived").length;
+
+  document.getElementById("statReports").textContent = open;
+  document.getElementById("statArchived").textContent = archived;
+  document.getElementById("statFish").textContent = fishData.length;
+
+}
+
+/* ============================================================
+   ONGLETS
+============================================================ */
+
+function showTab(name,button){
+
+  document
+    .querySelectorAll(".tabs button")
+    .forEach(b=>b.classList.remove("active"));
+
+  if(button) button.classList.add("active");
+
+  if(name==="reports") renderReports();
+  if(name==="fish") renderFish();
+  if(name==="users") renderUsers();
+  if(name==="activity") renderActivity();
+  if(name==="stats") renderStats();
+
+}
+
+/* ============================================================
+   MODÉRATION
+============================================================ */
+
+let reportFilter = "open";
+
+function renderReports(){
+
+  updateCounters();
+
+  panel.innerHTML = `
+
+    <div class="card">
+
+      <h2>🚩 Centre de modération</h2>
+
+      <p class="muted">
+        Chaque signalement possède maintenant son propre dossier.
+        Les dossiers traités sont conservés dans l'historique.
+      </p>
+
+      <div class="reportSubTabs">
+
+        <button
+          class="${reportFilter==="open"?"active":""}"
+          onclick="setReportFilter('open')">
+          📂 Dossiers non classés
+          <span class="badge red">
+            ${reports.filter(r=>r.status==="open").length}
+          </span>
+        </button>
+
+        <button
+          class="${reportFilter==="archived"?"active":""}"
+          onclick="setReportFilter('archived')">
+          🗂️ Dossiers classés
+          <span class="badge green">
+            ${reports.filter(r=>r.status==="archived").length}
+          </span>
+        </button>
+
+        <button
+          class="${reportFilter==="all"?"active":""}"
+          onclick="setReportFilter('all')">
+          📋 Tous
+        </button>
+
+      </div>
+
+      <div id="reportList"></div>
+
+    </div>
+
+  `;
+
+  renderReportList();
+
+}
+
+function setReportFilter(filter){
+
+  reportFilter = filter;
+
+  renderReports();
+
+}
+
+function renderReportList(){
+
+  const list = document.getElementById("reportList");
+
+  if(!list) return;
+
+  let data = reports.filter(r=>{
+
+    if(reportFilter==="all") return true;
+
+    return r.status===reportFilter;
+
+  });
+
+  const query =
+    document.getElementById("globalSearch")?.value
+    ?.trim()
+    .toLowerCase();
+
+  if(query){
+
+    data = data.filter(r => {
+
+      return (
+
+        r.id.toLowerCase().includes(query) ||
+        r.author.toLowerCase().includes(query) ||
+        r.reason.toLowerCase().includes(query) ||
+        r.title.toLowerCase().includes(query) ||
+        r.content.toLowerCase().includes(query) ||
+        r.type.toLowerCase().includes(query)
+
+      );
+
+    });
+
+  }
+
+  if(!data.length){
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+        <div class="emoji">
+          ${reportFilter==="archived"?"🗂️":"🎉"}
+        </div>
+
+        <b>
+          ${query
+            ?"Aucun résultat."
+            :"Aucun dossier dans cette catégorie."}
+        </b>
+
+        <p>
+          ${query
+            ?"Essaie un autre terme de recherche."
+            :"Tout est à jour."}
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  list.innerHTML = data.map(reportCard).join("");
+
+}
+
+function reportCard(r){
+
+  const archived = r.status==="archived";
+
+  const typeLabel = {
+
+    prise:"PRISE",
+    commentaire:"COMMENTAIRE",
+    utilisateur:"UTILISATEUR"
+
+  }[r.type] || "AUTRE";
+
+  return `
+
+    <div class="reportCard">
+
+      <div class="reportTop">
+
+        <div class="reportIcon">
+          ${r.icon}
+        </div>
+
+        <div class="reportTitle">
+
+          <b>
+            ${escapeHTML(r.title)}
+          </b>
+
+          <div class="small">
+            ${escapeHTML(r.author)}
+            • ${escapeHTML(r.date)}
+          </div>
+
+          <div class="reportReason">
+            ⚠️ ${escapeHTML(r.reason)}
+          </div>
+
+        </div>
+
+        <div>
+
+          <span class="badge ${archived?"green":"red"}">
+            ${archived?"CLASSÉ":"À TRAITER"}
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="reportContent">
+
+        <div>
+
+          <span class="badge blue">
+            ${typeLabel}
+          </span>
+
+          <span class="badge orange">
+            ${r.reports} signalement${r.reports>1?"s":""}
+          </span>
+
+          <span class="badge">
+            ${escapeHTML(r.id)}
+          </span>
+
+        </div>
+
+        <p>
+          ${escapeHTML(r.content)}
+        </p>
+
+        ${
+          r.image
+          ?
+          `<img src="${r.image}" alt="Photo de la prise">`
+          :
+          ""
+        }
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="btn btnBlue"
+          onclick="openReport('${r.id}')">
+          🔍 Ouvrir le dossier
+        </button>
+
+        ${
+          !archived
+          ?
+          `
+          <button
+            class="btn btnGreen"
+            onclick="keepReport('${r.id}')">
+            ✓ Conserver
+          </button>
+
+          <button
+            class="btn btnRed"
+            onclick="openSanction('${r.id}')">
+            🔨 Sanctionner
+          </button>
+
+          <button
+            class="btn btnOrange"
+            onclick="deleteReport('${r.id}')">
+            🗑️ Supprimer
+          </button>
+          `
+          :
+          `
+          <button
+            class="btn btnDark"
+            onclick="reopenReport('${r.id}')">
+            ↩️ Réouvrir
+          </button>
+          `
+        }
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* ============================================================
+   OUVRIR DOSSIER
+============================================================ */
+
+function openReport(id){
+
+  const r = reports.find(x=>x.id===id);
+
+  if(!r) return;
+
+  document.getElementById("modalBox").innerHTML = `
+
+    <div class="modalHead">
+
+      <h2>
+        ${r.icon} Dossier ${escapeHTML(r.id)}
+      </h2>
+
+      <button class="close" onclick="closeModal()">
+        ×
+      </button>
+
+    </div>
+
+    <div class="detailGrid">
+
+      <div class="detail">
+        <div class="key">Statut</div>
+        <div class="value">
+          ${r.status==="open"
+            ?"🚩 NON CLASSÉ"
+            :"🗂️ CLASSÉ"}
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Type</div>
+        <div class="value">
+          ${escapeHTML(r.type)}
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Auteur</div>
+        <div class="value">
+          ${escapeHTML(r.author)}
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Date</div>
+        <div class="value">
+          ${escapeHTML(r.date)}
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Motif</div>
+        <div class="value">
+          ${escapeHTML(r.reason)}
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Nombre de signalements</div>
+        <div class="value">
+          ${r.reports}
+        </div>
+      </div>
+
+    </div>
+
+    <h3>📄 Contenu signalé</h3>
+
+    <div class="reportContent">
+
+      <b>${escapeHTML(r.title)}</b>
+
+      <p>
+        ${escapeHTML(r.content)}
+      </p>
+
+      ${
+        r.image
+        ?
+        `<img src="${r.image}" alt="Photo signalée">`
+        :
+        ""
+      }
+
+    </div>
+
+    <h3>🔎 Informations détaillées</h3>
+
+    <div class="detailGrid">
+
+      ${
+        Object.entries(r.details)
+        .map(([key,value])=>`
+
+          <div class="detail">
+
+            <div class="key">
+              ${escapeHTML(key)}
+            </div>
+
+            <div class="value">
+              ${escapeHTML(value)}
+            </div>
+
+          </div>
+
+        `)
+        .join("")
+      }
+
+    </div>
+
+    ${
+      r.action
+      ?
+      `
+      <h3>⚖️ Décision de modération</h3>
+
+      <div class="reportContent">
+
+        <b>
+          ${escapeHTML(r.action)}
+        </b>
+
+        <p class="small">
+          ${escapeHTML(r.actionDate || "")}
+        </p>
+
+        ${
+          r.moderatorNote
+          ?
+          `<p>${escapeHTML(r.moderatorNote)}</p>`
+          :
+          ""
+        }
+
+      </div>
+      `
+      :
+      ""
+    }
+
+    <div class="actions">
+
+      ${
+        r.status==="open"
+        ?
+        `
+        <button
+          class="btn btnRed"
+          onclick="closeModal();openSanction('${r.id}')">
+          🔨 Sanctionner
+        </button>
+
+        <button
+          class="btn btnGreen"
+          onclick="keepReport('${r.id}');closeModal()">
+          ✓ Conserver
+        </button>
+        `
+        :
+        `
+        <button
+          class="btn btnDark"
+          onclick="reopenReport('${r.id}');closeModal()">
+          ↩️ Réouvrir le dossier
+        </button>
+        `
+      }
+
+      <button
+        class="btn btnDark"
+        onclick="closeModal()">
+        Fermer
+      </button>
+
+    </div>
+
+  `;
+
+  openModal();
+
+}
+
+/* ============================================================
+   GARDER
+============================================================ */
+
+function keepReport(id){
+
+  const r = reports.find(x=>x.id===id);
+
+  if(!r) return;
+
+  r.status="archived";
+  r.action="Signalement classé — contenu conservé";
+  r.actionDate=new Date().toLocaleString("fr-FR");
+  r.moderatorNote="Après vérification, aucune suppression n'a été jugée nécessaire.";
+
+  saveReports();
+  updateCounters();
+  renderReports();
+
+  showToast("✓ Signalement classé — contenu conservé");
+
+}
+
+/* ============================================================
+   SUPPRIMER
+============================================================ */
+
+function deleteReport(id){
+
+  const r = reports.find(x=>x.id===id);
+
+  if(!r) return;
+
+  r.status="archived";
+  r.action="Contenu supprimé";
+  r.actionDate=new Date().toLocaleString("fr-FR");
+  r.moderatorNote="Le contenu a été retiré après examen du signalement.";
+
+  saveReports();
+  updateCounters();
+  renderReports();
+
+  showToast("🗑️ Contenu supprimé et dossier classé");
+
+}
+
+/* ============================================================
+   RÉOUVRIR
+============================================================ */
+
+function reopenReport(id){
+
+  const r = reports.find(x=>x.id===id);
+
+  if(!r) return;
+
+  r.status="open";
+
+  saveReports();
+  updateCounters();
+  renderReports();
+
+  showToast("↩️ Dossier déplacé vers les dossiers non classés");
+
+}
+
+/* ============================================================
+   SANCTION
+============================================================ */
+
+function openSanction(id){
+
+  const r = reports.find(x=>x.id===id);
+
+  if(!r) return;
+
+  document.getElementById("modalBox").innerHTML = `
+
+    <div class="modalHead">
+
+      <h2>🔨 Sanctionner</h2>
+
+      <button class="close" onclick="closeModal()">
+        ×
+      </button>
+
+    </div>
+
+    <p class="muted">
+      Dossier : <b>${escapeHTML(r.id)}</b>
+      • ${escapeHTML(r.author)}
+    </p>
+
+    <div class="formGroup">
+
+      <label>
+        Type de sanction
+      </label>
+
+      <select id="sanctionType">
+
+        <option>Avertissement officiel</option>
+        <option>Restriction des commentaires — 24 h</option>
+        <option>Restriction des publications — 24 h</option>
+        <option>Restriction des commentaires — 7 jours</option>
+        <option>Restriction des publications — 7 jours</option>
+        <option>Suspension du compte — 24 h</option>
+        <option>Suspension du compte — 7 jours</option>
+        <option>Bannissement définitif</option>
+
+      </select>
+
+    </div>
+
+    <div class="formGroup">
+
+      <label>
+        Note de modération
+      </label>
+
+      <textarea
+        id="sanctionNote"
+        placeholder="Explique la décision de modération..."></textarea>
+
+    </div>
+
+    <div class="reportContent">
+
+      <b>⚠️ Attention</b>
+
+      <p class="small">
+        Une sanction classe automatiquement le dossier.
+        Elle apparaîtra ensuite dans « Dossiers classés ».
+      </p>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="btn btnRed"
+        onclick="applySanction('${r.id}')">
+        🔨 Appliquer la sanction
+      </button>
+
+      <button
+        class="btn btnDark"
+        onclick="closeModal()">
+        Annuler
+      </button>
+
+    </div>
+
+  `;
+
+  openModal();
+
+}
+
+function applySanction(id){
+
+  const r = reports.find(x=>x.id===id);
+
+  if(!r) return;
+
+  const sanction =
+    document.getElementById("sanctionType").value;
+
+  const note =
+    document.getElementById("sanctionNote").value.trim();
+
+  r.status="archived";
+  r.action="Sanction : "+sanction;
+  r.actionDate=new Date().toLocaleString("fr-FR");
+  r.moderatorNote =
+    note ||
+    "Sanction appliquée après examen du dossier.";
+
+  saveReports();
+  closeModal();
+  updateCounters();
+  renderReports();
+
+  showToast("🔨 Sanction appliquée — dossier classé");
+
+}
+
+/* ============================================================
+   UTILISATEURS
+============================================================ */
+
+function renderUsers(){
+
+  let data=[...users];
+
+  const query =
+    document.getElementById("globalSearch")
+    ?.value.trim().toLowerCase();
+
+  if(query){
+
+    data=data.filter(u=>{
+
+      return (
+
+        u.name.toLowerCase().includes(query) ||
+        u.id.toLowerCase().includes(query) ||
+        u.city.toLowerCase().includes(query) ||
+        u.status.toLowerCase().includes(query)
+
+      );
+
+    });
+
+  }
+
+  panel.innerHTML = `
+
+    <div class="card">
+
+      <h2>👤 Tous les utilisateurs</h2>
+
+      <p class="muted">
+        Recherche dans les profils, comptes et informations de modération.
+      </p>
+
+      <div id="usersList">
+
+        ${
+          data.length
+          ?
+          data.map(userRow).join("")
+          :
+          `
+          <div class="empty">
+            <div class="emoji">🔎</div>
+            Aucun utilisateur trouvé.
+          </div>
+          `
+        }
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+function userRow(u){
+
+  return `
+
+    <div class="userRow">
+
+      <div class="avatar">
+        ${escapeHTML(u.name[0])}
+      </div>
+
+      <div class="userInfo">
+
+        <b>
+          ${escapeHTML(u.name)}
+
+          ${
+            u.verified
+            ?
+            `<span class="badge blue">✓ vérifié</span>`
+            :
+            ""
+          }
+
+        </b>
+
+        <div class="line">
+          ${escapeHTML(u.id)}
+          • ${escapeHTML(u.city)}
+        </div>
+
+        <div class="line">
+          🎣 ${u.catches} prises
+          • 👥 ${u.followers} abonnés
+          • 🚩 ${u.reports} signalement${u.reports>1?"s":""}
+        </div>
+
+      </div>
+
+      <span class="badge ${
+        u.status==="Actif"
+        ?"green"
+        :
+        u.status==="Sous surveillance"
+        ?"red"
+        :"orange"
+      }">
+
+        ${escapeHTML(u.status)}
+
+      </span>
+
+      <div class="actions">
+
+        <button
+          class="btn btnBlue"
+          onclick="openUser('${u.id}')">
+          👁️ Profil
+        </button>
+
+        <button
+          class="btn btnRed"
+          onclick="quickBan('${u.id}')">
+          🔨 Sanction
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* ============================================================
+   PROFIL DÉTAILLÉ
+============================================================ */
+
+function openUser(id){
+
+  const u = users.find(x=>x.id===id);
+
+  if(!u) return;
+
+  document.getElementById("modalBox").innerHTML = `
+
+    <div class="modalHead">
+
+      <h2>👤 Profil surveillé</h2>
+
+      <button class="close" onclick="closeModal()">
+        ×
+      </button>
+
+    </div>
+
+    <div class="profileHero">
+
+      <div class="bigAvatar">
+        ${escapeHTML(u.name[0])}
+      </div>
+
+      <div>
+
+        <div class="profileName">
+          ${escapeHTML(u.name)}
+        </div>
+
+        <div class="muted">
+          ${escapeHTML(u.id)}
+        </div>
+
+        <div style="margin-top:7px">
+
+          <span class="badge ${
+            u.status==="Actif"
+            ?"green"
+            :"orange"
+          }">
+            ${escapeHTML(u.status)}
+          </span>
+
+          ${
+            u.verified
+            ?
+            `<span class="badge blue">✓ Compte vérifié</span>`
+            :
+            ""
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="profileStats">
+
+      <div class="profileStat">
+        <b>${u.catches}</b>
+        <span class="small">Prises</span>
+      </div>
+
+      <div class="profileStat">
+        <b>${u.followers}</b>
+        <span class="small">Abonnés</span>
+      </div>
+
+      <div class="profileStat">
+        <b>${u.following}</b>
+        <span class="small">Abonnements</span>
+      </div>
+
+      <div class="profileStat">
+        <b>${u.comments}</b>
+        <span class="small">Commentaires</span>
+      </div>
+
+    </div>
+
+    <h3>📋 Informations du compte</h3>
+
+    <div class="detailGrid">
+
+      <div class="detail">
+        <div class="key">Ville</div>
+        <div class="value">${escapeHTML(u.city)}</div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Inscription</div>
+        <div class="value">${escapeHTML(u.joined)}</div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Likes reçus</div>
+        <div class="value">${u.likes}</div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Signalements</div>
+        <div class="value">${u.reports}</div>
+      </div>
+
+    </div>
+
+    <h3>🚨 Surveillance</h3>
+
+    <div class="reportContent">
+
+      ${
+        u.reports>0
+        ?
+        `
+        <b>⚠️ Ce compte possède des signalements.</b>
+
+        <p class="small">
+          Vérifier l'historique des publications et commentaires avant une sanction définitive.
+        </p>
+        `
+        :
+        `
+        <b>✅ Aucun problème détecté.</b>
+        `
+      }
+
+    </div>
+
+    <h3>🎣 Dernières prises</h3>
+
+    <div class="detailGrid">
+
+      <div class="detail">
+        <div class="key">Dernière prise</div>
+        <div class="value">Bar — 61 cm</div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Plus grosse prise</div>
+        <div class="value">Bar — 61 cm</div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Total enregistré</div>
+        <div class="value">${u.catches} prises</div>
+      </div>
+
+      <div class="detail">
+        <div class="key">Engagement</div>
+        <div class="value">${u.likes} likes</div>
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="btn btnRed"
+        onclick="closeModal();quickBan('${u.id}')">
+        🔨 Sanctionner
+      </button>
+
+      <button
+        class="btn btnDark"
+        onclick="closeModal()">
+        Fermer
+      </button>
+
+    </div>
+
+  `;
+
+  openModal();
+
+}
+
+function quickBan(id){
+
+  const u = users.find(x=>x.id===id);
+
+  if(!u) return;
+
+  document.getElementById("modalBox").innerHTML = `
+
+    <div class="modalHead">
+
+      <h2>🔨 Sanction — ${escapeHTML(u.name)}</h2>
+
+      <button class="close" onclick="closeModal()">
+        ×
+      </button>
+
+    </div>
+
+    <div class="formGroup">
+
+      <label>Sanction</label>
+
+      <select id="userSanction">
+
+        <option>Avertissement officiel</option>
+        <option>Restriction 24 h</option>
+        <option>Restriction 7 jours</option>
+        <option>Suspension 24 h</option>
+        <option>Suspension 7 jours</option>
+        <option>Bannissement définitif</option>
+
+      </select>
+
+    </div>
+
+    <div class="formGroup">
+
+      <label>Motif</label>
+
+      <textarea
+        id="userSanctionNote"
+        placeholder="Motif de la sanction..."></textarea>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="btn btnRed"
+        onclick="applyUserSanction('${u.id}')">
+        🔨 Appliquer
+      </button>
+
+      <button
+        class="btn btnDark"
+        onclick="closeModal()">
+        Annuler
+      </button>
+
+    </div>
+
+  `;
+
+  openModal();
+
+}
+
+function applyUserSanction(id){
+
+  const u=users.find(x=>x.id===id);
+
+  if(!u) return;
+
+  const type=document.getElementById("userSanction").value;
+
+  u.status =
+    type==="Bannissement définitif"
+    ?"Banni"
+    :"Sanctionné";
+
+  activityLog.unshift([
+    new Date().toLocaleDateString("fr-FR"),
+    "🔨",
+    "Sanction utilisateur",
+    u.name+" — "+type
+  ]);
+
+  closeModal();
+
+  showToast("🔨 Sanction appliquée à "+u.name);
+
+  renderUsers();
+
+}
+
+/* ============================================================
+   POISSONS
+============================================================ */
+
+function renderFish(){
+
+  panel.innerHTML = `
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h2>➕ Ajouter une espèce</h2>
+
+        <div class="formGroup">
+          <label>Nom</label>
+          <input id="fishName" placeholder="Ex. Dorade royale">
+        </div>
+
+        <div class="formGroup">
+          <label>URL de l'image</label>
+          <input id="fishImage" placeholder="https://...">
+        </div>
+
+        <div class="formGroup">
+          <label>Description</label>
+          <textarea id="fishDescription"
+            placeholder="Description détaillée..."></textarea>
+        </div>
+
+        <button
+          class="btn btnBlue"
+          onclick="addFish()">
+          🐟 Ajouter le poisson
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <h2>📚 Base publique</h2>
+
+        <p class="muted">
+          ${fishData.length} espèces actuellement enregistrées.
+        </p>
+
+        <div class="fishGrid">
+
+          ${
+            fishData.map((f,i)=>`
+
+              <div class="fishCard">
+
+                <img
+                  src="${f[1]}"
+                  alt="${escapeHTML(f[0])}"
+                  onerror="this.src='https://placehold.co/700x450?text=Poisson'"
+                >
+
+                <div class="fishBody">
+
+                  <b>${escapeHTML(f[0])}</b>
+
+                  <div class="small">
+                    Fiche active • PUBLIC
+                  </div>
+
+                  <div class="actions">
+
+                    <button
+                      class="btn btnDark"
+                      onclick="editFish(${i})">
+                      ✏️ Modifier
+                    </button>
+
+                    <button
+                      class="btn btnRed"
+                      onclick="removeFish(${i})">
+                      🗑️
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            `).join("")
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+function addFish(){
+
+  const name=document.getElementById("fishName").value.trim();
+
+  const image=
+    document.getElementById("fishImage").value.trim();
+
+  if(!name){
+
+    showToast("⚠️ Entre un nom d'espèce");
+
+    return;
+
+  }
+
+  fishData.push([
+    name,
+    image || "https://placehold.co/700x450?text="+encodeURIComponent(name)
+  ]);
+
+  updateCounters();
+  renderFish();
+
+  showToast("🐟 Espèce ajoutée");
+
+}
+
+function editFish(i){
+
+  const old=fishData[i];
+
+  document.getElementById("modalBox").innerHTML=`
+
+    <div class="modalHead">
+
+      <h2>✏️ Modifier ${escapeHTML(old[0])}</h2>
+
+      <button class="close" onclick="closeModal()">×</button>
+
+    </div>
+
+    <div class="formGroup">
+      <label>Nom</label>
+      <input id="editFishName" value="${escapeHTML(old[0])}">
+    </div>
+
+    <div class="formGroup">
+      <label>Image</label>
+      <input id="editFishImage" value="${escapeHTML(old[1])}">
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="btn btnBlue"
+        onclick="saveFish(${i})">
+        💾 Enregistrer
+      </button>
+
+    </div>
+
+  `;
+
+  openModal();
+
+}
+
+function saveFish(i){
+
+  fishData[i][0]=
+    document.getElementById("editFishName").value.trim();
+
+  fishData[i][1]=
+    document.getElementById("editFishImage").value.trim();
+
+  closeModal();
+  renderFish();
+
+  showToast("✓ Fiche poisson modifiée");
+
+}
+
+function removeFish(i){
+
+  const name=fishData[i][0];
+
+  fishData.splice(i,1);
+
+  updateCounters();
+  renderFish();
+
+  showToast("🗑️ "+name+" retiré");
+
+}
+
+/* ============================================================
+   ACTIVITÉ
+============================================================ */
+
+function renderActivity(){
+
+  panel.innerHTML=`
+
+    <div class="card">
+
+      <h2>📜 Journal d'activité</h2>
+
+      <p class="muted">
+        Historique des événements importants de la plateforme.
+      </p>
+
+      <div>
+
+        ${
+          activityLog.map(a=>`
+
+            <div class="userRow">
+
+              <div class="reportIcon">
+                ${a[1]}
+              </div>
+
+              <div class="userInfo">
+
+                <b>${escapeHTML(a[2])}</b>
+
+                <div class="line">
+                  ${escapeHTML(a[3])}
+                </div>
+
+              </div>
+
+              <span class="badge">
+                ${escapeHTML(a[0])}
+              </span>
+
+            </div>
+
+          `).join("")
+        }
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* ============================================================
+   STATS
+============================================================ */
+
+function renderStats(){
+
+  const open=reports.filter(r=>r.status==="open").length;
+  const archived=reports.filter(r=>r.status==="archived").length;
+
+  panel.innerHTML=`
+
+    <div class="threeGrid">
+
+      <div class="card">
+
+        <h2>🚩 Modération</h2>
+
+        <div class="notice">
+          Dossiers non classés :
+          <b>${open}</b>
+        </div>
+
+        <div class="notice">
+          Dossiers classés :
+          <b>${archived}</b>
+        </div>
+
+        <div class="notice">
+          Total :
+          <b>${reports.length}</b>
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <h2>👥 Communauté</h2>
+
+        <div class="notice">
+          Utilisateurs :
+          <b>3 829</b>
+        </div>
+
+        <div class="notice">
+          Prises :
+          <b>12 481</b>
+        </div>
+
+        <div class="notice">
+          Commentaires :
+          <b>8 421</b>
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <h2>📈 Activité</h2>
+
+        <div class="notice">
+          ❤️ Likes aujourd'hui :
+          <b>1 248</b>
+        </div>
+
+        <div class="notice">
+          💬 Commentaires :
+          <b>386</b>
+        </div>
+
+        <div class="notice">
+          🎣 Nouvelles prises :
+          <b>84</b>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>📊 Signalements par type</h2>
+
+      <div class="tableWrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Type</th>
+              <th>Nombre</th>
+              <th>Part</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>🎣 Prises</td>
+              <td>2</td>
+              <td>40%</td>
+            </tr>
+
+            <tr>
+              <td>💬 Commentaires</td>
+              <td>2</td>
+              <td>40%</td>
+            </tr>
+
+            <tr>
+              <td>👤 Utilisateurs</td>
+              <td>1</td>
+              <td>20%</td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* ============================================================
+   RECHERCHE GLOBALE
+============================================================ */
+
+function globalSearch(value){
+
+  value=value.trim();
+
+  if(!value){
+
+    if(document.getElementById("tabReports").classList.contains("active")){
+      renderReports();
+    }
+
+    return;
+
+  }
+
+  const q=value.toLowerCase();
+
+  const reportResults=reports.filter(r=>{
+
+    return (
+
+      r.id.toLowerCase().includes(q) ||
+      r.author.toLowerCase().includes(q) ||
+      r.reason.toLowerCase().includes(q) ||
+      r.title.toLowerCase().includes(q) ||
+      r.content.toLowerCase().includes(q)
+
+    );
+
+  });
+
+  const userResults=users.filter(u=>{
+
+    return (
+
+      u.name.toLowerCase().includes(q) ||
+      u.id.toLowerCase().includes(q) ||
+      u.city.toLowerCase().includes(q)
+
+    );
+
+  });
+
+  const fishResults=fishData.filter(f=>
+    f[0].toLowerCase().includes(q)
+  );
+
+  panel.innerHTML=`
+
+    <div class="card">
+
+      <h2>🔎 Résultats de recherche</h2>
+
+      <p class="muted">
+        Recherche : <b>${escapeHTML(value)}</b>
+      </p>
+
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h2>
+          🚩 Signalements
+          <span class="badge red">
+            ${reportResults.length}
+          </span>
+        </h2>
+
+        ${
+          reportResults.length
+          ?
+          reportResults.map(r=>`
+
+            <div class="reportCard">
+
+              <div class="reportTop">
+
+                <div class="reportIcon">
+                  ${r.icon}
+                </div>
+
+                <div class="reportTitle">
+
+                  <b>${escapeHTML(r.title)}</b>
+
+                  <div class="small">
+                    ${escapeHTML(r.author)}
+                    • ${escapeHTML(r.id)}
+                  </div>
+
+                  <div class="reportReason">
+                    ${escapeHTML(r.reason)}
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="actions">
+
+                <button
+                  class="btn btnBlue"
+                  onclick="openReport('${r.id}')">
+                  Ouvrir
+                </button>
+
+              </div>
+
+            </div>
+
+          `).join("")
+          :
+          `<div class="empty">Aucun signalement.</div>`
+        }
+
+      </div>
+
+      <div class="card">
+
+        <h2>
+          👤 Utilisateurs
+          <span class="badge blue">
+            ${userResults.length}
+          </span>
+        </h2>
+
+        ${
+          userResults.length
+          ?
+          userResults.map(u=>`
+
+            <div class="userRow">
+
+              <div class="avatar">
+                ${escapeHTML(u.name[0])}
+              </div>
+
+              <div class="userInfo">
+
+                <b>${escapeHTML(u.name)}</b>
+
+                <div class="line">
+                  ${escapeHTML(u.id)}
+                  • ${u.catches} prises
+                </div>
+
+              </div>
+
+              <button
+                class="btn btnBlue"
+                onclick="openUser('${u.id}')">
+                Voir
+              </button>
+
+            </div>
+
+          `).join("")
+          :
+          `<div class="empty">Aucun utilisateur.</div>`
+        }
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        🐟 Poissons
+        <span class="badge green">
+          ${fishResults.length}
+        </span>
+      </h2>
+
+      ${
+        fishResults.length
+        ?
+        fishResults.map(f=>`
+
+          <div class="userRow">
+
+            <div class="reportIcon">
+              🐟
+            </div>
+
+            <div class="userInfo">
+              <b>${escapeHTML(f[0])}</b>
+              <div class="line">
+                Fiche publique
+              </div>
+            </div>
+
+          </div>
+
+        `).join("")
+        :
+        `<div class="empty">Aucun poisson.</div>`
+      }
+
+    </div>
+
+  `;
+
+}
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+function openModal(){
+
+  document.getElementById("modal").classList.add("open");
+
+}
+
+function closeModal(){
+
+  document.getElementById("modal").classList.remove("open");
+
+}
+
+function closeModalOutside(event){
+
+  if(event.target.id==="modal"){
+    closeModal();
+  }
+
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+
+updateCounters();
+renderReports();
+
+</script>
+
+</body>
+  </html>
