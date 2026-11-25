@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#07111f">
-<title>ÇaMord! — ADMIN V3</title>
+<title>ÇaMord! — ADMIN</title>
 
 <style>
 *{box-sizing:border-box}
@@ -714,10 +714,36 @@ input:focus,textarea:focus,select:focus{
     padding:7px;
   }
 }
+
+.loginOverlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:#07111f}
+.loginCard{width:min(420px,100%);background:#0d1929;border:1px solid #2a405c;border-radius:18px;padding:24px;color:#f4f7fb}
+.loginCard h1{margin:0 0 8px}.loginCard p{color:#91a1b5;line-height:1.5}
+.loginCard label{display:block;margin:14px 0 6px;font-size:13px;color:#b8c8da}
+.loginCard input{width:100%;padding:12px;background:#091522;border:1px solid #29405b;border-radius:10px;color:white}
+.loginCard button{width:100%;padding:13px;margin-top:16px;border-radius:10px;background:#168cff;color:white;font-weight:900}
+.loginError{min-height:18px;color:#ff8797!important;font-size:13px}
+#adminApp{display:none}
+
 </style>
 </head>
 
 <body>
+
+<div class="loginOverlay" id="loginOverlay">
+  <form class="loginCard" onsubmit="return adminLogin(event)">
+    <div style="font-size:30px">🎣</div>
+    <h1>ÇaMord! ADMIN</h1>
+    <p>Accès à la console d'administration.</p>
+    <label for="adminUsername">Identifiant</label>
+    <input id="adminUsername" autocomplete="username" required>
+    <label for="adminPassword">Mot de passe</label>
+    <input id="adminPassword" type="password" autocomplete="current-password" required>
+    <div class="loginError" id="loginError"></div>
+    <button type="submit">Se connecter</button>
+    <p style="font-size:11px">Verrouillage visuel local uniquement : ce mot de passe présent dans le HTML n'est pas une sécurité serveur.</p>
+  </form>
+</div>
+<div id="adminApp">
 
 <header class="header">
   <div class="headerInner">
@@ -751,14 +777,14 @@ input:focus,textarea:focus,select:focus{
 
     <div class="stat">
       <span class="label">🎣 Prises</span>
-      <b id="statCatches">12 481</b>
-      <span class="mini">+84 aujourd’hui</span>
+      <b id="statCatches">0</b>
+      <span class="mini">en attente des données</span>
     </div>
 
     <div class="stat">
       <span class="label">👤 Utilisateurs</span>
-      <b id="statUsers">3 829</b>
-      <span class="mini">+21 aujourd’hui</span>
+      <b id="statUsers">0</b>
+      <span class="mini">en attente des données</span>
     </div>
 
     <div class="stat">
@@ -775,14 +801,14 @@ input:focus,textarea:focus,select:focus{
 
     <div class="stat">
       <span class="label">💬 Commentaires</span>
-      <b>8 421</b>
-      <span class="mini">+386 aujourd’hui</span>
+      <b id="statComments">0</b>
+      <span class="mini">en attente des données</span>
     </div>
 
     <div class="stat">
       <span class="label">🐟 Espèces</span>
-      <b id="statFish">6</b>
-      <span class="mini">base publique</span>
+      <b id="statFish">0</b>
+      <span class="mini">en attente des données</span>
     </div>
 
   </div>
@@ -825,6 +851,24 @@ input:focus,textarea:focus,select:focus{
 
 <script>
 
+// Accès local demandé. Pour une vraie protection, les droits devront être
+// vérifiés par Supabase (RLS / rôle admin), pas uniquement par ce code HTML.
+const ADMIN_LOGIN = "GabrielAdmin";
+const ADMIN_PASSWORD = "CaMord!Admin_7xP29#";
+function adminLogin(event){
+  event.preventDefault();
+  const u=document.getElementById("adminUsername").value;
+  const p=document.getElementById("adminPassword").value;
+  if(u===ADMIN_LOGIN && p===ADMIN_PASSWORD){
+    document.getElementById("loginOverlay").style.display="none";
+    document.getElementById("adminApp").style.display="block";
+    return false;
+  }
+  document.getElementById("loginError").textContent="Identifiant ou mot de passe incorrect.";
+  return false;
+}
+
+
 /* ============================================================
    DONNÉES
 ============================================================ */
@@ -832,226 +876,13 @@ input:focus,textarea:focus,select:focus{
 const DEMO_IMG =
 "https://images.unsplash.com/photo-1544550285-f813152fb2fd?auto=format&fit=crop&w=1000&q=80";
 
-const reportsDefault = [
+const reportsDefault = [];
 
-  {
-    id:"R-1001",
-    type:"prise",
-    icon:"🎣",
-    author:"LucasFishing",
-    reason:"Photo potentiellement trompeuse",
-    date:"27 août 2026 • 14:32",
-    reports:3,
-    status:"open",
-    title:"Bar — 61 cm",
-    content:"Le membre affirme avoir capturé un bar de 61 cm.",
-    details:{
-      "Espèce":"Bar",
-      "Taille":"61 cm",
-      "Poids":"2,4 kg",
-      "Zone":"Charente-Maritime",
-      "Auteur":"LucasFishing",
-      "ID prise":"CATCH-48291"
-    },
-    image:DEMO_IMG
-  },
+const users = [];
 
-  {
-    id:"R-1002",
-    type:"commentaire",
-    icon:"💬",
-    author:"NoaPêche",
-    reason:"Contenu insultant",
-    date:"27 août 2026 • 13:48",
-    reports:5,
-    status:"open",
-    title:"Commentaire signalé",
-    content:"« Franchement t'es nul, retourne apprendre à pêcher avant de poster ça. »",
-    details:{
-      "Auteur":"NoaPêche",
-      "Publication":"Bar — LucasFishing",
-      "Date":"27 août 2026 • 13:46",
-      "Signalements":"5",
-      "ID commentaire":"COM-83921"
-    }
-  },
+let fishData = [];
 
-  {
-    id:"R-1003",
-    type:"prise",
-    icon:"🐟",
-    author:"PaulAtlantique",
-    reason:"Prise possiblement falsifiée",
-    date:"27 août 2026 • 11:21",
-    reports:4,
-    status:"open",
-    title:"Daurade royale — 72 cm",
-    content:"Plusieurs membres demandent une vérification de la prise.",
-    details:{
-      "Espèce":"Daurade royale",
-      "Taille":"72 cm",
-      "Poids":"5,1 kg",
-      "Zone":"Côte Atlantique",
-      "Auteur":"PaulAtlantique",
-      "ID prise":"CATCH-49211"
-    },
-    image:"https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=1000&q=80"
-  },
-
-  {
-    id:"R-1004",
-    type:"utilisateur",
-    icon:"👤",
-    author:"TitiFishing",
-    reason:"Signalements répétés",
-    date:"26 août 2026 • 22:14",
-    reports:8,
-    status:"open",
-    title:"Comportement problématique",
-    content:"Le compte a reçu plusieurs signalements concernant ses publications et commentaires.",
-    details:{
-      "Utilisateur":"TitiFishing",
-      "Ancienneté":"8 mois",
-      "Prises":"92",
-      "Commentaires":"431",
-      "Signalements reçus":"8",
-      "ID utilisateur":"USR-28491"
-    }
-  },
-
-  {
-    id:"R-1005",
-    type:"commentaire",
-    icon:"💬",
-    author:"PêcheurDu17",
-    reason:"Spam",
-    date:"26 août 2026 • 18:41",
-    reports:2,
-    status:"open",
-    title:"Commentaire public",
-    content:"🔥🔥🔥 GAGNE 100€ !!! clique sur mon profil !!! GAGNE GAGNE GAGNE !!!",
-    details:{
-      "Auteur":"PêcheurDu17",
-      "Publication":"Maquereau — TomAuBord",
-      "Signalements":"2",
-      "ID commentaire":"COM-88231"
-    }
-  }
-
-];
-
-const users = [
-
-  {
-    name:"LucasFishing",
-    id:"USR-1001",
-    city:"La Rochelle",
-    joined:"12 janvier 2026",
-    catches:127,
-    followers:482,
-    following:91,
-    comments:328,
-    likes:1842,
-    reports:1,
-    status:"Actif",
-    verified:true
-  },
-
-  {
-    name:"EmmaPêche",
-    id:"USR-1002",
-    city:"Île de Ré",
-    joined:"4 février 2026",
-    catches:104,
-    followers:391,
-    following:73,
-    comments:241,
-    likes:1621,
-    reports:0,
-    status:"Actif",
-    verified:true
-  },
-
-  {
-    name:"TomAuBord",
-    id:"USR-1003",
-    city:"Royan",
-    joined:"19 mars 2026",
-    catches:87,
-    followers:274,
-    following:64,
-    comments:183,
-    likes:942,
-    reports:0,
-    status:"Actif",
-    verified:false
-  },
-
-  {
-    name:"TitiFishing",
-    id:"USR-1004",
-    city:"Bordeaux",
-    joined:"8 décembre 2025",
-    catches:92,
-    followers:112,
-    following:194,
-    comments:431,
-    likes:381,
-    reports:8,
-    status:"Sous surveillance",
-    verified:false
-  },
-
-  {
-    name:"NoaPêche",
-    id:"USR-1005",
-    city:"Nantes",
-    joined:"21 juin 2026",
-    catches:43,
-    followers:96,
-    following:52,
-    comments:217,
-    likes:422,
-    reports:2,
-    status:"Averti",
-    verified:false
-  }
-
-];
-
-let fishData = [
-
-  ["Bar",
-   "https://images.unsplash.com/photo-1544550285-f813152fb2fd?auto=format&fit=crop&w=700&q=80"],
-
-  ["Daurade royale",
-   "https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=700&q=80"],
-
-  ["Maquereau",
-   "https://images.unsplash.com/photo-1516683037151-9a17603a8dc1?auto=format&fit=crop&w=700&q=80"],
-
-  ["Sole",
-   "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=700&q=80"],
-
-  ["Lieu jaune",
-   "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=700&q=80"],
-
-  ["Mulet",
-   "https://images.unsplash.com/photo-1530053969600-caed2596d242?auto=format&fit=crop&w=700&q=80"]
-
-];
-
-const activityLog = [
-
-  ["27/08 14:32","🚩","Nouveau signalement","Bar — LucasFishing"],
-  ["27/08 14:15","👤","Nouvel utilisateur","PêcheurDu17"],
-  ["27/08 13:48","💬","Commentaire signalé","NoaPêche"],
-  ["27/08 12:51","🎣","Nouvelle prise","EmmaPêche — Daurade"],
-  ["27/08 11:21","🚩","Nouveau signalement","PaulAtlantique"],
-  ["27/08 10:48","❤️","Pic de likes","1 248 likes aujourd'hui"],
-  ["26/08 22:14","🚩","Compte signalé","TitiFishing"]
-
-];
+const activityLog = [];
 
 /* ============================================================
    LOCAL STORAGE
@@ -1063,7 +894,7 @@ function loadReports(){
 
   try{
 
-    const saved = localStorage.getItem("camord_admin_reports_v3");
+    const saved = localStorage.getItem("camord_admin_reports_empty_v1");
 
     if(saved){
       return JSON.parse(saved);
@@ -1071,14 +902,14 @@ function loadReports(){
 
   }catch(e){}
 
-  return reportsDefault.map(x=>({...x}));
+  return [];
 
 }
 
 function saveReports(){
 
   localStorage.setItem(
-    "camord_admin_reports_v3",
+    "camord_admin_reports_empty_v1",
     JSON.stringify(reports)
   );
 
@@ -2509,7 +2340,7 @@ function renderStats(){
 
         <div class="notice">
           Commentaires :
-          <b>8 421</b>
+          <b id="statComments">0</b>
         </div>
 
       </div>
@@ -2830,5 +2661,6 @@ renderReports();
 
 </script>
 
+</div>
 </body>
   </html>
